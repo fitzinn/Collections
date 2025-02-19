@@ -13,8 +13,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 
 // Define custom colors for Owned and Not Owned buttons
-val GreenButton = Color(0xFF4CAF50)  // Green for Owned
-val RedButton = Color(0xFFF44336)    // Red for Not Owned
+val GreenButton = Color(0xFF4CAF50)
+val RedButton = Color(0xFFF44336)
+val YellowButton = Color(0xFFFFC107)
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,

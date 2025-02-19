@@ -38,5 +38,12 @@ class AlbumRepository(private val albumDao: AlbumDao) {
             albumDao.update(it)
         }
     }
+
+    suspend fun deleteAlbumByTitle(title: String) {
+        val album = albumDao.getAlbumByTitle(title) // Fetch the album by title
+        if (album != null) {
+            albumDao.delete(album) // Delete if found
+        }
+    }
 }
 

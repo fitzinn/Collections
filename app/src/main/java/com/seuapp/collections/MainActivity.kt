@@ -33,28 +33,29 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(albumViewModel: AlbumViewModel) {
-    // Get the context using LocalContext
-    val context = LocalContext.current
     val navController = rememberNavController()
 
-    // Define the navigation graph
     NavHost(navController = navController, startDestination = "main_screen") {
         composable("main_screen") {
-            MainContent(albumViewModel, navController, context)
+            MainContent(albumViewModel, navController)
         }
         composable("update_album_screen") {
-            UpdateAlbumScreen(albumViewModel)
+            UpdateAlbumScreen(albumViewModel, navController)
         }
     }
 }
 
 @Composable
-fun MainContent(albumViewModel: AlbumViewModel, navController: NavHostController, context: android.content.Context) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        //Go to Update Album Screen
+fun MainContent(albumViewModel: AlbumViewModel, navController: NavController) {
+    val context = LocalContext.current // Retrieve context here
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Button(
             onClick = {
-                // Navigate to UpdateAlbumScreen
                 navController.navigate("update_album_screen")
             },
             modifier = Modifier

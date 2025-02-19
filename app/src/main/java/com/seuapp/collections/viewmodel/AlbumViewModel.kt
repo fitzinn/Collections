@@ -40,4 +40,11 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
             repository.updateAlbumByTitle(title, artist, year, coverUrl)
         }
     }
+
+    fun deleteAlbum(title: String) {
+        viewModelScope.launch {
+            repository.deleteAlbumByTitle(title)
+        }
+    }
+
 }
