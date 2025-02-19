@@ -1,13 +1,9 @@
 package com.seuapp.collections.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import androidx.lifecycle.viewModelScope
-import com.seuapp.collections.data.Album
-import com.seuapp.collections.data.AlbumRepository
-import com.seuapp.collections.data.AlbumDatabase
+import com.seuapp.collections.data.*
 import kotlinx.coroutines.launch
 
 class AlbumViewModel(application: Application) : AndroidViewModel(application) {
@@ -18,26 +14,30 @@ class AlbumViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val albumDao = AlbumDatabase.getDatabase(application).albumDao()
         repository = AlbumRepository(albumDao)
-        allAlbums = repository.allAlbums.asLiveData() // Convert Flow to LiveData
+        allAlbums = repository.allAlbums
     }
 
     fun toggleOwned(album: Album) {
         viewModelScope.launch {
-            repository.toggleOwned(album)
+            repository.toggleOwned(album.title)
         }
     }
 
     fun addAlbum(newAlbum: Album) {
         viewModelScope.launch {
-            repository.insertAlbum(newAlbum)  // Insert album into the database
+            repository.insertAlbum(newAlbum)
         }
     }
 
-    // Method to delete an album
     fun deleteAlbum(album: Album) {
         viewModelScope.launch {
-            repository.deleteAlbum(album) // Delete album from the database
+            repository.deleteAlbum(album)
+        }
+    }
+
+    fun updateAlbum(title: String, artist: String?, year: Int?, coverUrl: String?) {
+        viewModelScope.launch {
+            repository.updateAlbumByTitle(title, artist, year, coverUrl)
         }
     }
 }
-

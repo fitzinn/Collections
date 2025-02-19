@@ -63,7 +63,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.foundation.android)
-    implementation(libs.androidx.foundation.android) // Coroutine support
+    implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.navigation.compose) // Coroutine support
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 

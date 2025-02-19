@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class Album(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
-    val coverUrl: String,
-    val artist: String,
-    val year: Int,
-    val owned: Boolean
+    var coverUrl: String,
+    var artist: String,
+    var year: Int,
+    var owned: Boolean
 )

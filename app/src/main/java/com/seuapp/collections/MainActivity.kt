@@ -1,25 +1,19 @@
 package com.seuapp.collections
 
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.activity.*
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.livedata.*
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.*
 import androidx.compose.ui.platform.LocalContext
-import com.seuapp.collections.ui.screens.AlbumCatalog
+import androidx.navigation.*
+import androidx.navigation.compose.*
+import com.seuapp.collections.ui.screens.*
 import com.seuapp.collections.viewmodel.AlbumViewModel
-import com.seuapp.collections.data.Album
 
 class MainActivity : ComponentActivity() {
     private val albumViewModel: AlbumViewModel by viewModels()
@@ -29,6 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface {
+                    // Pass NavHostController to handle navigation
                     MainScreen(albumViewModel)
                 }
             }
@@ -38,90 +33,35 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(albumViewModel: AlbumViewModel) {
+    // Get the context using LocalContext
     val context = LocalContext.current
+    val navController = rememberNavController()
 
-    var title by remember { mutableStateOf("") }
-    var coverUrl by remember { mutableStateOf("") }
-    var artist by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
-
-    Column(modifier = Modifier.padding(16.dp)) {
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("Album Title") },
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = coverUrl,
-            onValueChange = { coverUrl = it },
-            label = { Text("Cover URL") },
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = artist,
-            onValueChange = { artist = it },
-            label = { Text("Artist") },
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        OutlinedTextField(
-            value = year,
-            onValueChange = { year = it },
-            label = { Text("Release Year") },
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Button(
-            onClick = {
-                if (title.isNotEmpty() && coverUrl.isNotEmpty() && year.isNotEmpty() && artist.isNotEmpty()) {
-                    val yearInt = year.toIntOrNull()
-                    if (yearInt != null) {
-                        val newAlbum = Album(
-                            title = title,
-                            coverUrl = coverUrl,
-                            year = yearInt,
-                            artist = artist,
-                            owned = true
-                        )
-                        albumViewModel.addAlbum(newAlbum)
-                        Toast.makeText(context, "Album added!", Toast.LENGTH_SHORT).show()
-
-                        title = ""
-                        coverUrl = ""
-                        year = ""
-                        artist = "" // Clear artist field
-                    } else {
-                        Toast.makeText(context, "Year must be a number!", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(context, "All fields must be filled!", Toast.LENGTH_SHORT).show()
-                }
-            },
-            modifier = Modifier.padding(top = 16.dp)
-        ) {
-            Text("Add New Album")
+    // Define the navigation graph
+    NavHost(navController = navController, startDestination = "main_screen") {
+        composable("main_screen") {
+            MainContent(albumViewModel, navController, context)
         }
+        composable("update_album_screen") {
+            UpdateAlbumScreen(albumViewModel)
+        }
+    }
+}
 
-        // New Button to Delete the Last Album Added
+@Composable
+fun MainContent(albumViewModel: AlbumViewModel, navController: NavHostController, context: android.content.Context) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        //Go to Update Album Screen
         Button(
             onClick = {
-                // Get the last album added
-                val lastAlbum = albumViewModel.allAlbums.value?.lastOrNull()
-
-                // If there's an album to delete
-                lastAlbum?.let {
-                    albumViewModel.deleteAlbum(it)
-                    Toast.makeText(context, "Last album deleted!", Toast.LENGTH_SHORT).show()
-                } ?: run {
-                    Toast.makeText(context, "No album to delete!", Toast.LENGTH_SHORT).show()
-                }
+                // Navigate to UpdateAlbumScreen
+                navController.navigate("update_album_screen")
             },
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(),
         ) {
-            Text("Delete Last Album")
+            Text("Album Manager")
         }
 
         AlbumCatalog(

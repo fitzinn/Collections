@@ -1,17 +1,15 @@
 package com.seuapp.collections.ui.screens
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.material3.*
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.*
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import coil.compose.rememberImagePainter
+import com.example.collections.ui.theme.*
 import com.seuapp.collections.data.Album
 
 @Composable
@@ -53,10 +51,13 @@ fun AlbumCatalog(albums: List<Album>, onAlbumClick: (Album) -> Unit) {
                             Text(text = album.title, style = MaterialTheme.typography.titleSmall)
                             Text(text = "Year: ${album.year}", style = MaterialTheme.typography.bodySmall)
 
-                            // Owned status button
+                            // Owned status button with dynamic color
                             Button(
                                 onClick = { onAlbumClick(album) },
-                                modifier = Modifier.padding(top = 4.dp)
+                                modifier = Modifier.padding(top = 4.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (album.owned) GreenButton else RedButton
+                                )
                             ) {
                                 Text(text = if (album.owned) "Owned" else "Not Owned")
                             }
