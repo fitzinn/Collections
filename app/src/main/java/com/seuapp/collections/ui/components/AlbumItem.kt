@@ -1,5 +1,6 @@
 package com.seuapp.collections.ui.components
 
+import Album
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -7,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.graphics.*
 import coil.compose.rememberImagePainter
-import com.seuapp.collections.data.Album
 import androidx.compose.material3.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.ui.draw.*

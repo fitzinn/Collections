@@ -1,12 +1,12 @@
 package com.seuapp.collections
 
+import Album
 import android.os.Bundle
 import androidx.activity.*
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.platform.LocalContext
@@ -49,6 +49,14 @@ fun MainScreen(albumViewModel: AlbumViewModel) {
 fun MainContent(albumViewModel: AlbumViewModel, navController: NavController) {
     val context = LocalContext.current // Retrieve context here
 
+    // Use a State to observe albums from the repository
+    var albums by remember { mutableStateOf(listOf<Album>()) }
+
+    // LaunchedEffect to fetch albums on first composition
+    LaunchedEffect(Unit) {
+        albums = albumViewModel.getAllAlbums() // Get all albums from MongoDB
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +74,7 @@ fun MainContent(albumViewModel: AlbumViewModel, navController: NavController) {
         }
 
         AlbumCatalog(
-            albums = albumViewModel.allAlbums.observeAsState(emptyList()).value,
+            albums = albums,
             onAlbumClick = { albumViewModel.toggleOwned(it) }
         )
     }

@@ -1,4 +1,4 @@
-package com.seuapp.collections.ui.screens
+package com.seuapp.collections
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.seuapp.collections.viewmodel.*
 import androidx.navigation.NavController
 import com.example.collections.ui.theme.*
-import com.seuapp.collections.data.Album
+import Album
 
 @Composable
 fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
@@ -21,15 +21,23 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
     var year by remember { mutableStateOf("") }
     var coverUrl by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var successMessage by remember { mutableStateOf("") }
     val context = LocalContext.current
 
+    // Handle success message after actions like add, update, delete
+    LaunchedEffect(successMessage) {
+        successMessage.takeIf { it.isNotEmpty() }?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            successMessage = "" // Reset message after showing toast
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        //Forms for Album Info
+        // Forms for Album Info
         TextField(
             value = title,
             onValueChange = { title = it },
@@ -60,12 +68,13 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
             label = { Text("Cover URL") },
             modifier = Modifier.fillMaxWidth()
         )
-        //Add Album Button
+
+        // Add Album Button
         Button(
             onClick = {
                 if (title.isNotEmpty() && coverUrl.isNotEmpty() && year.isNotEmpty() && artist.isNotEmpty()) {
                     val yearInt = year.toIntOrNull()
-                    if (yearInt != null) {
+                    if (yearInt != null && yearInt >= 1900) {
                         val newAlbum = Album(
                             title = title,
                             coverUrl = coverUrl,
@@ -74,7 +83,7 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
                             owned = true
                         )
                         viewModel.addAlbum(newAlbum)
-                        Toast.makeText(context, "Album added!", Toast.LENGTH_SHORT).show()
+                        successMessage = "Album added!" // Show success message
 
                         // Reset fields after adding album
                         title = ""
@@ -82,7 +91,7 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
                         year = ""
                         artist = ""
                     } else {
-                        Toast.makeText(context, "Year must be a number!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Year must be a valid number (>= 1900)!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(context, "All fields must be filled!", Toast.LENGTH_SHORT).show()
@@ -96,7 +105,7 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
             Text("Add Album")
         }
 
-        //Update Album Button
+        // Update Album Button
         Button(
             onClick = {
                 if (title.isNotEmpty() && artist.isNotEmpty()) {
@@ -106,7 +115,7 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
 
                     isLoading = true
                     viewModel.updateAlbum(title, artist, updatedYear, updatedCoverUrl)
-                    Toast.makeText(context, "Album updated successfully!", Toast.LENGTH_SHORT).show()
+                    successMessage = "Album updated successfully!" // Show success message
                     isLoading = false
                 } else {
                     Toast.makeText(context, "Title and Artist are required", Toast.LENGTH_SHORT).show()
@@ -125,9 +134,11 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
         Button(
             onClick = {
                 if (title.isNotEmpty()) {
+                    // Call delete function in the ViewModel
                     viewModel.deleteAlbum(title)
-                    Toast.makeText(context, "Album deleted!", Toast.LENGTH_SHORT).show()
+                    successMessage = "Album deleted!" // Show success message
 
+                    // Clear fields
                     title = ""
                     artist = ""
                     year = ""
@@ -144,12 +155,10 @@ fun UpdateAlbumScreen(viewModel: AlbumViewModel, navController: NavController) {
             Text("Delete Album")
         }
 
-        //Navigate Back to Main Screen
+        // Navigate Back to Main Screen
         Button(
             onClick = {
-                navController.navigate("main_screen") {
-                    popUpTo("main_screen") { inclusive = true }
-                }
+                navController.popBackStack() // Pop current screen to go back
             },
             modifier = Modifier
                 .padding(top = 16.dp)

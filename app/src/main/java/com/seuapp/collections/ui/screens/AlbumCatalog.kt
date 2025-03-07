@@ -1,5 +1,6 @@
 package com.seuapp.collections.ui.screens
 
+import Album
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -10,7 +11,6 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.unit.*
 import coil.compose.rememberImagePainter
 import com.example.collections.ui.theme.*
-import com.seuapp.collections.data.Album
 
 @Composable
 fun AlbumCatalog(albums: List<Album>, onAlbumClick: (Album) -> Unit) {

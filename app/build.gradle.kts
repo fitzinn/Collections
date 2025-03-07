@@ -32,6 +32,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -41,6 +47,12 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "META-INF/native-image/org.mongodb/bson/native-image.properties"
+        }
     }
 }
 
@@ -67,6 +79,12 @@ dependencies {
     implementation(libs.androidx.navigation.compose) // Coroutine support
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
+
+    // MongoDB
+    implementation(libs.bson)
+    implementation("org.mongodb:mongodb-driver-sync:4.11.0") {
+        exclude(group = "org.mongodb", module = "bson-record-codec")
+    }
 
     // Testes
     testImplementation(libs.junit)
